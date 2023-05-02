@@ -193,6 +193,11 @@ button {
             align-items: center;
         }
 
+        .select-coin{
+            .select-item{
+                display: flex;
+            }
+        }
         .your-amount {
             background-color: transparent;
             border: 1px solid rgba(110, 86, 248, 0.25);
