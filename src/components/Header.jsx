@@ -1,13 +1,15 @@
 import { useState } from "react";
 import navLogo from "../assets/img/navLogo.png";
 
-const Header = () => {
+const Header = ({ showModal }) => {
   const [openMenu, setIsOpenMenu] = useState(false);
   function handleClick() {
     setIsOpenMenu(!openMenu);
   }
   return (
-    <header className={`header ${openMenu && "h-262"}`}>
+    <header
+      className={`header ${openMenu && "h-262"} ${showModal && "overlay"}`}
+    >
       <div className="flex justify-between items-center">
         <div>
           <img src={navLogo} alt="navLogo" />

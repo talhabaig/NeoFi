@@ -8,7 +8,7 @@ import solanaImg from "../assets/img/solanaimg.png";
 
 import CoinsDropDown from "./CoinsDropDown";
 
-const TradeBox = () => {
+const TradeBox = ({showModal, setShowModal}) => {
   const [currentCurrency, setCurrentCurrency] = useState(null);
   var ws = null;
   const [currencyList, setCurrencyList] = useState([
@@ -44,7 +44,7 @@ const TradeBox = () => {
     },
   ]);
   const [value, setValue] = useState(currencyList[0]);
-
+const [Opacity , setOpacity] = useState(false)
   const setUpCurrentCurrency = () => {
     if (ws != null) {
       setCurrentCurrency(null);
@@ -67,11 +67,14 @@ const TradeBox = () => {
   }, [value]);
 
   return (
-    <div className="trade-box">
-      <CoinsDropDown />
+    <>
+    <div className={`trade-box ${showModal && "tradebox-overlay"}`}>
+      {showModal && (
+        <CoinsDropDown loop={currencyList} setShowModal={setShowModal} />
+      )}
       <div className="top-circle">
         <div>
-          <img src={ethImg} alt="" />
+          <img src={ethImg} alt="img" />
         </div>
       </div>
       <div className="gap-1">
@@ -81,9 +84,11 @@ const TradeBox = () => {
             ₹ {currentCurrency != null ? currentCurrency.price : 0}
           </span>
         </div>
-
         {currentCurrency != null ? (
-          <div className="select-coin pointer">
+          <div
+            onClick={() => setShowModal(true)}
+            className="select-coin pointer"
+          >
             <div className="select-coin-icon">
               <div>
                 <img src={currentCurrency.image} alt="logo" />
@@ -129,6 +134,7 @@ const TradeBox = () => {
       </div>
       <button className="btn-buy">Buy</button>
     </div>
+    </>
   );
 };
 export default TradeBox;

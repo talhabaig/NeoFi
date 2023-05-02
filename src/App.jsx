@@ -1,16 +1,15 @@
 // import { useState } from 'react'
-import React from "react";
+import React, { useState } from "react";
 import Header from "./components/Header";
 import TradeBox from "./components/TradeBox";
 
 function App() {
-  // const [count, setCount] = useState(0)
-
+  const [showModal, setShowModal] = useState(false);
   return (
     <>
-    <Header/>
+      <Header showModal={showModal} />
       <div className="main">
-        <TradeBox/>
+        <TradeBox showModal={showModal} setShowModal={setShowModal} />
       </div>
     </>
   );
