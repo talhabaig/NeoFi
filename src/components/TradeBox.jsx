@@ -54,13 +54,14 @@ const TradeBox = ({ showModal, setShowModal }) => {
     if (wsRef.current !== null) {
       wsRef.current.close();
     }
-    wsRef.current = new WebSocket(value.link);
+    wsRef.current = new WebSocket(
+      `wss://stream.binance.com:9443/ws/${value.symbol}@trade`
+    );
     wsRef.current.onmessage = (event) => {
       var stockObject = JSON.parse(event.data);
-      setCurrentCurrency((parseFloat(stockObject.p) / 80).toFixed(2));
+      setCurrentCurrency((parseFloat(stockObject.p) * 80).toFixed(2));
     };
   };
-
   useEffect(() => {
     setUpCurrentCurrency();
   }, [value]);
@@ -123,9 +124,9 @@ const TradeBox = ({ showModal, setShowModal }) => {
               className="fs-22 text-gray font-600"
               type="number"
               placeholder="0.00"
-              value={parseInt(investment)}
+              value={investment}
               onChange={(e) => {
-                SetInvestment(e.target.value);
+                SetInvestment(parseFloat(e.target.value));
               }}
             />
           </span>
@@ -139,7 +140,9 @@ const TradeBox = ({ showModal, setShowModal }) => {
 
         <div className="estimated-amount text-white">
           <span className="fs-22 text-gray font-600">
-            {currentCurrency ? (currentCurrency * investment).toFixed(2) : 0}
+            {currentCurrency
+              ? parseFloat((investment / currentCurrency).toFixed(16))
+              : 0}
           </span>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import CrossIcon from "./CrossIcon";
 import searchIcon from "../assets/img/searchIcon.png";
 import PropTypes from "prop-types";
+import { useMemo, useState } from "react";
 
 const CoinsDropDown = ({
   loop,
@@ -9,10 +10,22 @@ const CoinsDropDown = ({
   value,
   setCurrentCurrency,
 }) => {
+  const [searchVal, setSearchVal] = useState("");
+  const optionsToUse = useMemo(
+    () =>
+      loop.filter((item) =>
+        item.name.toLowerCase().includes(searchVal.toLowerCase())
+      ),
+    [searchVal, loop]
+  );
+  function closeModal() {
+    setShowModal(false);
+    setSearchVal("");
+  }
   return (
     <div className="text-primary dropdown-container">
       <div className="cross-icon">
-        <span onClick={() => setShowModal(false)}>
+        <span onClick={() => closeModal(false)}>
           <CrossIcon />
         </span>
       </div>
@@ -21,19 +34,22 @@ const CoinsDropDown = ({
           <div className="search-icon">
             <img src={searchIcon} alt="icon" />
           </div>
-          <input type="search" placeholder="Search chains" />
+          <input
+            value={searchVal}
+            onChange={(e) => setSearchVal(e.target.value)}
+            type="search"
+            placeholder="Search chains"
+          />
         </div>
         <div className="coins-scrollbar">
-          {loop.map((data, i) => (
+          {optionsToUse.map((data, i) => (
             <div
               key={i}
               className="coin-dropdown"
               onClick={() => {
                 setValue(data);
-                setShowModal(false);
+                closeModal(false);
                 setCurrentCurrency(null);
-                // localStorage.setItem("currencyData", JSON.stringify(data));
-                // window.location.reload();
               }}
             >
               <div className="coin-name">

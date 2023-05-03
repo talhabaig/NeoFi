@@ -268,7 +268,7 @@ button {
 .main .dropdown-container .dropdowns .coins-scrollbar {
   width: 100%;
   max-height: 18.5rem;
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
@@ -429,4 +429,24 @@ input[type="number"] {
 
 .rounded {
   border-radius: 50%;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 12px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
