@@ -1,14 +1,13 @@
-import React from "react";
 import CrossIcon from "./CrossIcon";
 import searchIcon from "../assets/img/searchIcon.png";
-import img from "../assets/img/ethimg.png";
+import PropTypes from "prop-types";
 
 const CoinsDropDown = ({
   loop,
   setShowModal,
-  currentCurrency,
   setValue,
-  setCurrentSymbol,
+  value,
+  setCurrentCurrency,
 }) => {
   return (
     <div className="text-primary dropdown-container">
@@ -30,10 +29,11 @@ const CoinsDropDown = ({
               key={i}
               className="coin-dropdown"
               onClick={() => {
-                console.log("Click", data);
-                setCurrentSymbol(data.symbol);
-                localStorage.setItem("currencyData", JSON.stringify(data));
-                window.location.reload();
+                setValue(data);
+                setShowModal(false);
+                setCurrentCurrency(null);
+                // localStorage.setItem("currencyData", JSON.stringify(data));
+                // window.location.reload();
               }}
             >
               <div className="coin-name">
@@ -42,9 +42,7 @@ const CoinsDropDown = ({
                 </div>
                 <span className="fs-14">{data?.name}</span>
               </div>
-              <div
-                className={currentCurrency.name == data.name ? "" : "tick-icon"}
-              >
+              <div className={value?.name == data.name ? "" : "tick-icon"}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="21"
@@ -55,9 +53,9 @@ const CoinsDropDown = ({
                   <path
                     d="M2 9.2L7.40909 14L19 2"
                     stroke="#58ADAB"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -67,5 +65,12 @@ const CoinsDropDown = ({
       </div>
     </div>
   );
+};
+CoinsDropDown.propTypes = {
+  loop: PropTypes.array,
+  setShowModal: PropTypes.func,
+  setValue: PropTypes.func,
+  value: PropTypes.object,
+  setCurrentCurrency: PropTypes.func,
 };
 export default CoinsDropDown;

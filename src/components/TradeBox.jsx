@@ -1,21 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import ethImg from "../assets/img/ethimg.png";
 import bitcoinImg from "../assets/img/bitcoinimg.jpg";
 import maticImg from "../assets/img/maticimg.png";
 import binanceImg from "../assets/img/binanceimg.jpg";
 import xrpImg from "../assets/img/xrpimg.png";
 import solanaImg from "../assets/img/solanaimg.png";
-
 import CoinsDropDown from "./CoinsDropDown";
+import PropTypes from "prop-types";
 
 const TradeBox = ({ showModal, setShowModal }) => {
-  const wsRef = useRef();
+  const wsRef = useRef(null);
 
   const [currentCurrency, setCurrentCurrency] = useState(null);
-  const [currentSymbol, setCurrentSymbol] = useState("ethusdt");
-  const [investment, SetInvestment] = useState(0);
-  wsRef.current = null;
-  const [currencyList, setCurrencyList] = useState([
+  const [investment, SetInvestment] = useState(null);
+  const currencyList = [
     {
       img: ethImg,
       name: "Ethreum",
@@ -52,28 +50,22 @@ const TradeBox = ({ showModal, setShowModal }) => {
       link: "wss://stream.binance.com:9443/ws/solusdt@trade",
       symbol: "solusdt",
     },
-  ]);
+  ];
   const [value, setValue] = useState(currencyList[0]);
-  const [Opacity, setOpacity] = useState(false);
   const setUpCurrentCurrency = () => {
+    if (wsRef.current !== null) {
+      wsRef.current.close();
+    }
     wsRef.current = new WebSocket(value.link);
     console.log(wsRef.current);
     wsRef.current.onmessage = (event) => {
       var stockObject = JSON.parse(event.data);
-      setCurrentCurrency({
-        name: value.name,
-        price: (parseFloat(stockObject.p) / 80).toFixed(2),
-        image: value.img,
-        symbol: stockObject.s.toLowerCase(),
-      });
+      console.log(stockObject);
+      setCurrentCurrency((parseFloat(stockObject.p) / 80).toFixed(2));
     };
   };
 
   useEffect(() => {
-    if (localStorage.getItem("currencyData") != null) {
-      setValue(JSON.parse(localStorage.getItem("currencyData")));
-    }
-    wsRef.current?.close();
     setUpCurrentCurrency();
   }, [value]);
 
@@ -82,11 +74,12 @@ const TradeBox = ({ showModal, setShowModal }) => {
       <div className={`trade-box ${showModal && "tradebox-overlay"}`}>
         {showModal && (
           <CoinsDropDown
+            value={value}
             loop={currencyList}
             setShowModal={setShowModal}
             currentCurrency={currentCurrency}
             setValue={setValue}
-            setCurrentSymbol={setCurrentSymbol}
+            setCurrentCurrency={setCurrentCurrency}
           />
         )}
         <div className="top-circle">
@@ -97,34 +90,35 @@ const TradeBox = ({ showModal, setShowModal }) => {
         <div className="gap-1">
           <div className="flex justify-between items-center">
             <span className="text-primary fs-14">Current value</span>
-            <span className="fs-24 text-secondary bold">
-              ₹ {currentCurrency != null ? currentCurrency.price : 0}
-            </span>
+            {currentCurrency === null ? (
+              <span className="text-white">Loading</span>
+            ) : (
+              <span className="fs-24 text-secondary bold">
+                ₹ {currentCurrency}
+              </span>
+            )}
           </div>
-          {currentCurrency != null ? (
-            <div
-              onClick={() => setShowModal(true)}
-              className="select-coin pointer"
-            >
-              <div className="select-coin-icon">
-                <div>
-                  <img src={currentCurrency.image} alt="logo" />
-                </div>
-                <span>{currentCurrency.name}</span>
+
+          <div
+            onClick={() => setShowModal(true)}
+            className="select-coin pointer"
+          >
+            <div className="select-coin-icon">
+              <div>
+                <img src={value.img} alt="logo" />
               </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="7"
-                viewBox="0 0 14 7"
-                fill="none"
-              >
-                <path d="M14 0H0L7 7L14 0Z" fill="#6E56F8" />
-              </svg>
+              <span>{value.name}</span>
             </div>
-          ) : (
-            "Loading data..."
-          )}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="7"
+              viewBox="0 0 14 7"
+              fill="none"
+            >
+              <path d="M14 0H0L7 7L14 0Z" fill="#6E56F8" />
+            </svg>
+          </div>
         </div>
         <div className="gap-1">
           <div className="fs-14 text-primary">Amount you want to invest</div>
@@ -135,7 +129,7 @@ const TradeBox = ({ showModal, setShowModal }) => {
                 className="fs-22 text-gray font-600"
                 type="number"
                 placeholder="0.00"
-                value={investment}
+                value={parseInt(investment)}
                 onChange={(e) => {
                   SetInvestment(e.target.value);
                 }}
@@ -151,9 +145,7 @@ const TradeBox = ({ showModal, setShowModal }) => {
 
           <div className="estimated-amount text-white">
             <span className="fs-22 text-gray font-600">
-              {currentCurrency
-                ? (currentCurrency.price * investment).toFixed(2)
-                : 0}
+              {currentCurrency ? (currentCurrency * investment).toFixed(2) : 0}
             </span>
           </div>
         </div>
@@ -161,5 +153,9 @@ const TradeBox = ({ showModal, setShowModal }) => {
       </div>
     </>
   );
+};
+TradeBox.propTypes = {
+  showModal: PropTypes.bool,
+  setShowModal: PropTypes.func,
 };
 export default TradeBox;

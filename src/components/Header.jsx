@@ -1,6 +1,6 @@
 import { useState } from "react";
 import navLogo from "../assets/img/navLogo.png";
-
+import PropTypes from "prop-types";
 const Header = ({ showModal }) => {
   const [openMenu, setIsOpenMenu] = useState(false);
   function handleClick() {
@@ -25,17 +25,17 @@ const Header = ({ showModal }) => {
               <path
                 d="M1 1h16M1 7h16M1 13h16"
                 stroke="#EAE8F4"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               ></path>
             ) : (
               <path
                 d="M1 13 13 1M1 1l12 12"
                 stroke="#fff"
-                stroke-width="2"
+                strokeWidth="2"
                 strokeLinecap="round"
-                stroke-linejoin="round"
+                strokeLinejoin="round"
               ></path>
             )}
           </svg>
@@ -52,5 +52,8 @@ const Header = ({ showModal }) => {
       <button>Connect wallet</button>
     </header>
   );
+};
+Header.propTypes = {
+  showModal: PropTypes.bool,
 };
 export default Header;
